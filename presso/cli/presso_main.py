@@ -95,3 +95,6 @@ def main():
     create_parser = subparsers.add_parser('create', help='TODO: create components')
     args = parser.parse_args()
     args.func(args)
+
+if __name__ == "__main__":
+    main()
