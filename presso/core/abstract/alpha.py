@@ -2,10 +2,11 @@ from abc import ABC, abstractmethod
 
 
 class AbstractAlpha(ABC):
-    def __init__(self, name, portfolio, main_dataevent, dataevents, config):
+    def __init__(self, name, portfolio, main_dataevent, dataevents, evts, config):
         self.name = name
         self._main_dataevent = main_dataevent
         self._dataevents = dataevents
+        self._evts = evts
         self._config = config
         # Check if portfolio has handler function
         callback_name = 'on%sSignal' % self.name
@@ -15,8 +16,11 @@ class AbstractAlpha(ABC):
             raise NotImplementedError('No handler function defined in portfolio')
         self._init()
 
-    async def onData(self, transaction, data):
-        signal = await self._calcSignal(data)
+    async def onData(self, transaction, evt):
+        if evt.type not in self._evts:
+            return
+            
+        signal = await self._calcSignal(evt.data)
         if signal > 1 or signal < -1:
             raise ValueError('Signal value should between +/-1')
         transaction.signal = signal

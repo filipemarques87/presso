@@ -9,6 +9,7 @@ import toml
 
 from presso.core import util
 from presso.core.eventqueue import EventQueue
+from presso.core.util.constants import EVENT_TYPE
 
 
 def run(args):
@@ -55,6 +56,7 @@ def run(args):
             portfolio,
             dataevents[alpha['main_dataevent']],
             {name: dataevents[name] for name in alpha['dataevents']},
+            [EVENT_TYPE[e] for e in alpha['events']],
             alpha['config']
         )
         dataevents[alpha['main_dataevent']].addAlpha(module)

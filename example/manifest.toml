@@ -14,17 +14,17 @@ file = "presso.log"
 [config]
 
 
-[[dataevents]]
-    name = "bitfinex_kline"
-    module = "presso.module.dataevent.bitfinex_kline.BitfinexKlineDataEvent"
-    data_path = "https://api.bitfinex.com/v2/candles"
-    # All generated DataEvents will be stored as a npy file if the path is not empty
-    history_file = "data/history/bitfinex_kline.npy"
-    [dataevents.config]
-        time_frame = "1m"
-        market = "BTCUSD"
-        start_time = 1508248900
-        end_time = 1508255000
+#[[dataevents]]
+#    name = "bitfinex_kline"
+#    module = "presso.module.dataevent.bitfinex_kline.BitfinexKlineDataEvent"
+#    data_path = "https://api.bitfinex.com/v2/candles"
+#    # All generated DataEvents will be stored as a npy file if the path is not empty
+#    history_file = "data/history/bitfinex_kline.npy"
+#    [dataevents.config]
+#        time_frame = "1m"
+#        market = "BTCUSD"
+#        start_time = 1508248900
+#        end_time = 1508255000
 
 [[dataevents]]
     name = "csv_kline"
@@ -45,9 +45,10 @@ file = "presso.log"
     name = "Printer"
     module = "presso.module.alpha.printer.PrinterAlpha"
     # Alpha is triggered by its main DataEvent
-    main_dataevent = "bitfinex_kline"
+    main_dataevent = "csv_kline"
     # Alpha also can access other DataEvents
     dataevents = []
+    events = ["CANDLE_STICK", ]
     [alphas.config]
 
 
@@ -55,7 +56,7 @@ file = "presso.log"
     name = "kline_history"
     module = "presso.module.connector.kline_history.KlineHistoryConnector"
     # Connector may use data from DataEvents to calculate price
-    dataevents = ["bitfinex_kline",]
+    dataevents = ["csv_kline",]
     [connectors.config]
 
 

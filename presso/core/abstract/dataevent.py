@@ -25,18 +25,19 @@ class AbstractDataEvent(ABC):
     def getHistory(self, num=0):
         return self._history[-num:]
 
-    def sendData(self, data):
-        self._saveHistory(data)
+    def sendData(self, evt):
+        self._saveHistory(evt)
         transaction = Transaction()
-        transaction.tstamp = data[0]
-        tasks = [alpha.onData(transaction, data) for alpha in self._alphas]
+        transaction.tstamp = evt.datetime
+        tasks = [alpha.onData(transaction, evt) for alpha in self._alphas]
         return asyncio.gather(*tasks)
 
     def _saveHistory(self, data):
-        if self._history is None:
-            self._history = [data]
-        else:
-            self._history = numpy.vstack([self._history, data])
+        pass
+        #if self._history is None:
+        #    self._history = [data]
+        #else:
+        #    self._history = numpy.vstack([self._history, data])
 
     def shutdown(self):
         if self._task.done() and self._task.exception():
@@ -47,9 +48,9 @@ class AbstractDataEvent(ABC):
 
     async def _start(self):
         event_queue = EventQueue.getInstance()
-        async for data in self._iter():
+        async for evt in self._iter():
             # Wait for previous event to be consumed
-            await event_queue.put(self, data)
+            await event_queue.put(self, evt)
         event_queue.remove(self)
 
     @abstractmethod
