@@ -14,15 +14,15 @@ class KlineHistoryConnector(AbstractConnector):
         return self._dataevent.getHistory(1)[0][-1]
 
     async def execute(self, transaction):
-        if transaction.operation == OPERATION.MARKET:
-            if transaction.buy == TICKER.BTC and transaction.sell == TICKER.USD:
-                transaction.price = self.__getPrice()
-            elif transaction.buy == TICKER.USD and transaction.sell == TICKER.BTC:
-                transaction.price = 1 / self.__getPrice()
-            if transaction.total:
-                transaction.amount = transaction.total / transaction.price * self._commission
-            elif transaction.amount:
-                transaction.total = transaction.amount * transaction.price * self._commission
-            transaction.status = STATUS.SUCCESS
-        else:
-            transaction.status = STATUS.FAIL
+        #if transaction.operation == OPERATION.MARKET:
+        #    if transaction.buy == TICKER.BTC and transaction.sell == TICKER.USD:
+        #        transaction.price = self.__getPrice()
+        #    elif transaction.buy == TICKER.USD and transaction.sell == TICKER.BTC:
+        #        transaction.price = 1 / self.__getPrice()
+        #    if transaction.total:
+        #        transaction.amount = transaction.total / transaction.price * self._commission
+        #    elif transaction.amount:
+        #        transaction.total = transaction.amount * transaction.price * self._commission
+        #    transaction.status = STATUS.SUCCESS
+        #else:
+        transaction.status = STATUS.FAIL
