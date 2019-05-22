@@ -109,3 +109,6 @@ ENV/
 #presso
 presso.log
 data/history/*
+
+data/sql/*.csv
+data/sql/*.db
