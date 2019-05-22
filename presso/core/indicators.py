@@ -24,11 +24,7 @@ class SMAIndicator(Indicator):
         self.__n = self._config['n']
 
     def compute(self, input):
-        if self._name not in input:
-            input[self._name] = np.array([], dtype=float)
-
-        output = SMA(input, timeperiod=self.__n)
-        input[self._name] = np.append(input[self._name], output[-1])
+        return SMA(input, timeperiod=self.__n)
 
 
 class BBANDSIndicator(Indicator):
@@ -39,17 +35,10 @@ class BBANDSIndicator(Indicator):
         self.__down_dev = self._config['dev']
 
     def compute(self, input):
-        if self._name not in input:
-            input[self._name] = {
-                'upper': np.array([], dtype=float),
-                'middle': np.array([], dtype=float),
-                'lower': np.array([], dtype=float),
-            }
-
         upper, middle, lower = BBANDS(
             input, timeperiod=self.__n, nbdevup=self.__up_dev, nbdevdn=self.__down_dev)
         input[self._name] = {
-            'upper': np.append(input[self._name]['upper'], upper[-1]),
-            'middle': np.append(input[self._name]['middle'], middle[-1]),
-            'lower': np.append(input[self._name]['lower'], lower[-1])
+            'upper': upper,
+            'middle': middle,
+            'lower': lower
         }

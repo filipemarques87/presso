@@ -2,6 +2,7 @@ import numpy
 import sqlite3
 
 from presso.core.abstract.dataevent import AbstractDataEvent
+from presso.core.event import CandleStickEvent, TickEvent
 
 
 class SQLiteKlineDataEvent(AbstractDataEvent):
@@ -19,16 +20,21 @@ class SQLiteKlineDataEvent(AbstractDataEvent):
             if data is None:
                 break
 
-            #yield data
-            yield [data[0],
-                   {'date': data[0],
-                    'symbol': data[1],
-                    'open': data[3],
-                    'high': data[4],
-                    'low': data[5],
-                    'close': data[6],
-                    'volume': data[7],
-                    }]
+            bar = None
+            if data[2] == '1':
+                bar = TickEvent(data[0])
+                bar.price = data[6]
+            else:
+                bar = CandleStickEvent(data[0])
+                bar.data = {'date': data[0],
+                            'open': data[3],
+                            'high': data[4],
+                            'low': data[5],
+                            'close': data[6],
+                            'volume': data[7],
+                            }
+
+            yield bar
 
     def shutdown(self):
         super().shutdown()

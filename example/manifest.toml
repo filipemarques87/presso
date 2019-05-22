@@ -41,7 +41,7 @@ file = "presso.log"
     [dataevents.config]
         query = """
             SELECT
-                *
+                date, symbol, granularity, open, high, low, close, volume
             FROM
                 stocks
             WHERE 1=1
@@ -66,8 +66,11 @@ file = "presso.log"
     main_dataevent = "sql_kline"
     # Alpha also can access other DataEvents
     dataevents = []
+    # The events that triggers this strategy
     events = ["CANDLE_STICK", ]
     [alphas.config]
+        # number of data size stored (ohlc + indicators)
+        n = 100
         [[alphas.config.indicators]]
             type = "sma"
             name = "sma20"

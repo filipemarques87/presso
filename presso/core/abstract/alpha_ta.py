@@ -13,7 +13,9 @@ OHLC_HEADER = ['date', 'open', 'high', 'low', 'close', 'volume']
 class AbstractAlphaTA(AbstractAlpha):
     def __init__(self, name, portfolio, main_dataevent, dataevents, evts, config):
         super().__init__(name, portfolio, main_dataevent, dataevents, evts, config)
-        self._df = dict((k, np.array([], dtype=float)) for k in OHLC_HEADER)
+
+        self.__n = self._config['n']
+        self._df = dict((k, np.full(self.__n, np.nan, dtype=float)) for k in OHLC_HEADER)
         self.__indicators = dict((ind['name'], self.__get_indicator(ind))
                                  for ind in self._config['indicators'])
 
@@ -22,11 +24,26 @@ class AbstractAlphaTA(AbstractAlpha):
 
     async def _calcSignal(self, data):
         for k in OHLC_HEADER:
-            self._df[k] = np.append(self._df[k], data[k])
+            self._df[k] = self.__shift5(self._df[k], -1)
+            self._df[k][-1] = data[k]
+        
+        for ind in self.__indicators:
+            self._df[ind] = self.__indicators[ind].compute(self._df)
 
-        dict((ind, self.__indicators[ind].compute(self._df))
-             for ind in self.__indicators)
         return await self._computeSignal()
+
+    # https://stackoverflow.com/questions/30399534/shift-elements-in-a-numpy-array
+    def __shift5(self, arr, num, fill_value=np.nan):
+        result = np.empty_like(arr)
+        if num < 0:
+            result[num:] = fill_value
+            result[:num] = arr[-num:]
+        elif num > 0:
+            result[:num] = fill_value
+            result[num:] = arr[:-num]
+        else:
+            result = arr
+        return result
 
     @abstractmethod
     async def _computeSignal(self):
