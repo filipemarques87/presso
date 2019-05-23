@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import logging
+import redis
 import sys
 
 from pydoc import locate
@@ -17,9 +18,13 @@ def run(args):
     # Setup logger
     log_format = '[%(levelname)s|%(module)s|%(asctime)s] %(message)s'
     log_level = getattr(logging, manifest['log']['level'].upper(), None)
-    logging.basicConfig(filename=manifest['log']['file'], format=log_format, level=log_level)
+    logging.basicConfig(
+        filename=manifest['log']['file'], format=log_format, level=log_level)
     # Set portfolio type
     util.IS_REALTIME = manifest['realtime']
+    # Set connection to redis
+    util.REDIS_DB = redis.StrictRedis(
+        host=manifest["redis"]["url"], port=manifest["redis"]["port"], db=0, decode_responses=True)
 
     # Load dataevents
     dataevents = {}
@@ -47,7 +52,8 @@ def run(args):
         statistics[stat['name']] = module
 
     # Load portfolio
-    portfolio = locate(manifest['module'])(connectors, statistics, manifest['config'])
+    portfolio = locate(manifest['module'])(
+        connectors, statistics, manifest['config'])
 
     # Load alphas
     for alpha in manifest['alphas']:
@@ -64,11 +70,13 @@ def run(args):
     # Start portfolio
     loop = asyncio.get_event_loop()
     event_queue = EventQueue.getInstance()
+
     async def main():
         # Let DataEvents to run first
         await asyncio.sleep(2)
         await event_queue.consume()
     # Press ENTER to stop eventloop and run statistics
+
     def stop():
         for dataevent in dataevents.values():
             dataevent.shutdown()
@@ -85,6 +93,7 @@ def run(args):
             util.LOG.exception(error)
     portfolio.runStatistics()
 
+
 def main():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest='action')
@@ -94,9 +103,11 @@ def main():
     run_parser.add_argument('manifest', type=open, help='TOML manifest file')
     run_parser.set_defaults(func=run)
 
-    create_parser = subparsers.add_parser('create', help='TODO: create components')
+    create_parser = subparsers.add_parser(
+        'create', help='TODO: create components')
     args = parser.parse_args()
     args.func(args)
+
 
 if __name__ == "__main__":
     main()

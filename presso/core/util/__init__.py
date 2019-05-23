@@ -1,9 +1,11 @@
 import logging
-
 import aiohttp
 
 
 LOG = logging.getLogger('presso')
+
+# this is set in presso_main.py
+REDIS_DB = None
 
 class HttpSession:
     __session = None
@@ -11,12 +13,17 @@ class HttpSession:
     @staticmethod
     def get():
         if not HttpSession.__session:
-            HttpSession.__session = aiohttp.ClientSession(raise_for_status=True)
+            HttpSession.__session = aiohttp.ClientSession(
+                raise_for_status=True)
         return HttpSession.__session
 
+
 IS_REALTIME = True
+
+
 def isRealtime():
     return IS_REALTIME
+
 
 def timeframeToSeconds(timeframe):
     return {

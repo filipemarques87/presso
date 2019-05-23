@@ -10,6 +10,10 @@ realtime = false
 level = "info"
 # Default log path
 file = "presso.log"
+# Redis database url and port
+[redis]
+url = "localhost"
+port = 6379
 # Config will be passed to _init() as a dict object
 [config]
 
@@ -75,7 +79,7 @@ file = "presso.log"
             type = "sma"
             name = "sma20"
             [alphas.config.indicators.config]
-                n = 2
+                n = 20
 
 
 [[connectors]]
