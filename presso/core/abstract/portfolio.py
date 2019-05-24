@@ -19,12 +19,13 @@ class AbstractPortfolio(ABC):
     def _execute(self, connector, transaction):
         self._transactions.append(transaction)
         task = asyncio.ensure_future(connector.execute(transaction))
-        #def __callback(_):
-        #    if transaction.status == STATUS.SUCCESS:
-        #        self._positions[transaction.buy] += transaction.amount
-        #        self._positions[transaction.sell] -= transaction.total
-        #        transaction.portfolio = self._positions.copy()
-        #task.add_done_callback(__callback)
+        def __callback(_):
+            pass
+            #if transaction.status == STATUS.SUCCESS:
+            #    self._positions[transaction.buy] += transaction.amount
+            #    self._positions[transaction.sell] -= transaction.total
+            #    transaction.portfolio = self._positions.copy()
+        task.add_done_callback(__callback)
 
     def runStatistics(self):
         for transaction in self._transactions:

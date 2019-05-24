@@ -3,7 +3,7 @@ from presso.core.util.constants import EVENT_TYPE
 
 class Event:
     def __init__(self, date, etype):
-        self.datetime = 0
+        self.datetime = date
         self.type = etype
 
 
