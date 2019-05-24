@@ -14,6 +14,7 @@ class AbstractDataEvent(ABC):
         self._datapath = datapath
         self._historyfile = historyfile
         self._config = config
+        self._pair = config["base"]+config["quote"]
         self._alphas = set()
         self._history = None
         self._task = asyncio.ensure_future(self._start())

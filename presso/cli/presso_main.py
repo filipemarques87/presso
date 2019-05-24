@@ -24,12 +24,17 @@ def run(args):
     util.IS_REALTIME = manifest['realtime']
     # Set connection to redis
     util.REDIS_DB = redis.StrictRedis(
-        host=manifest["redis"]["url"], port=manifest["redis"]["port"], db=0, decode_responses=True)
+        host=manifest["redis"]["url"], port=manifest["redis"]["port"],
+        db=manifest["redis"]["db"], decode_responses=True)
+
+    base = manifest["config"]["base"]
+    quote = manifest["config"]["quote"]
 
     # Load dataevents
     dataevents = {}
     for dataevent in manifest['dataevents']:
         module = locate(dataevent['module'])
+        dataevent['config'].update({"base": base, "quote": quote})
         dataevents[dataevent['name']] = module(
             dataevent['data_path'],
             dataevent['history_file'],

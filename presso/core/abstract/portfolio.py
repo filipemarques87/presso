@@ -12,10 +12,11 @@ class AbstractPortfolio(ABC):
         self._statistics = statistics
         self._config = config
         self._transactions = []
-
+        self._base = config["base"]
+        self._quote = config["quote"]
         self._init()
 
-    def _execute(self, connector, transaction, callback=None):
+    def _execute(self, connector, transaction):
         self._transactions.append(transaction)
         task = asyncio.ensure_future(connector.execute(transaction))
         #def __callback(_):
@@ -23,7 +24,7 @@ class AbstractPortfolio(ABC):
         #        self._positions[transaction.buy] += transaction.amount
         #        self._positions[transaction.sell] -= transaction.total
         #        transaction.portfolio = self._positions.copy()
-        task.add_done_callback(callback)
+        #task.add_done_callback(__callback)
 
     def runStatistics(self):
         for transaction in self._transactions:
@@ -44,16 +45,11 @@ class AbstractPortfolio(ABC):
             raise Exception(msg)
         return value
 
-    @property
-    def base(self):
-        return self.__get_from_redis("quantbot:base")
-
-    @property
-    def quote(self):
-        return self.__get_from_redis("quantbot:quote")
-
     def _get_position(self, ticker):
-        return float(self.__get_from_redis("quantbot:position:%s" % (ticker)))
+        return float(self.__get_from_redis("qb:pos:%s" % (ticker)))
 
     def _set_position(self, ticker, balance):
-        REDIS_DB.set("quantbot:position:%s" % (ticker), str(balance))
+        REDIS_DB.set("qb:pos:%s" % (ticker), str(balance))
+
+    def _can_trade(self):
+        return int(self.__get_from_redis("qb:cantrade")) == 1

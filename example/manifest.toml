@@ -14,9 +14,12 @@ file = "presso.log"
 [redis]
 url = "localhost"
 port = 6379
+db = 0
 # Config will be passed to _init() as a dict object
 [config]
-
+# pair to trade
+base = "BTC"
+quote = "USDT"
 
 #[[dataevents]]
 #    name = "bitfinex_kline"
