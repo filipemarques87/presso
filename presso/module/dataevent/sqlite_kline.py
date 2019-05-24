@@ -19,14 +19,15 @@ class SQLiteKlineDataEvent(AbstractDataEvent):
             data = self.__cursor.fetchone()
             if data is None:
                 break
-
+        
             bar = None
+            tstamp = data[0]/1000
             if data[2] == '1':
-                bar = TickEvent(data[0])
+                bar = TickEvent(tstamp)
                 bar.price = data[6]
             else:
-                bar = CandleStickEvent(data[0])
-                bar.data = {'date': data[0],
+                bar = CandleStickEvent(tstamp)
+                bar.data = {'date': tstamp,
                             'open': data[3],
                             'high': data[4],
                             'low': data[5],

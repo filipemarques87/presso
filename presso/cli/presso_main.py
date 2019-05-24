@@ -56,9 +56,15 @@ def run(args):
         module = locate(stat['module'])(stat['config'])
         statistics[stat['name']] = module
 
+    # Load reports
+    reports = {}
+    for report in manifest['reports']:
+        module = locate(report['module'])(report['config'])
+        reports[report['name']] = module
+
     # Load portfolio
     portfolio = locate(manifest['module'])(
-        connectors, statistics, manifest['config'])
+        connectors, reports, statistics, manifest['config'])
 
     # Load alphas
     for alpha in manifest['alphas']:

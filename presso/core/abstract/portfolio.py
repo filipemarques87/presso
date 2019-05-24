@@ -7,8 +7,9 @@ from presso.core.util import LOG, REDIS_DB
 
 
 class AbstractPortfolio(ABC):
-    def __init__(self, connectors, statistics, config):
+    def __init__(self, connectors, reports, statistics, config):
         self._connectors = connectors
+        self._reports = reports
         self._statistics = statistics
         self._config = config
         self._transactions = []
@@ -17,15 +18,19 @@ class AbstractPortfolio(ABC):
         self._init()
 
     def _execute(self, connector, transaction):
+        # report the transaction
+        for r in self._reports:
+            self._reports[r].report(transaction)
+        
         self._transactions.append(transaction)
         task = asyncio.ensure_future(connector.execute(transaction))
-        def __callback(_):
+        def __callback(_, tr):
             pass
             #if transaction.status == STATUS.SUCCESS:
             #    self._positions[transaction.buy] += transaction.amount
             #    self._positions[transaction.sell] -= transaction.total
             #    transaction.portfolio = self._positions.copy()
-        task.add_done_callback(__callback)
+        task.add_done_callback(__callback, transaction)
 
     def runStatistics(self):
         for transaction in self._transactions:

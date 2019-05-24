@@ -1,3 +1,8 @@
+from datetime import datetime
+
+from presso.core.util.constants import OPERATION
+
+
 class Transaction:
     def __init__(self):
         self.tstamp = 0
@@ -11,6 +16,26 @@ class Transaction:
         self.status = None
         self.portfolio = None
 
+    # TODO - improve the readable format
+    def get_readable_format(self):
+        srt_date = datetime.fromtimestamp(
+            self.tstamp).strftime('%d/%m/%Y %H:%M:%S')
+
+        action = "Place order"
+        if self.status is not None:
+            action = "Completed order[%s]" % self.status
+
+        order_type = "BUY"
+        if self.operation == OPERATION.SELL_LIMIT or self.operation == OPERATION.SELL_MARKET:
+            order_type = "SELL"
+        elif self.operation == OPERATION.CANCEL_ALL_ORDERS:
+            order_type = "CANCEL"
+
+        return '%s - %s %s' % (
+            srt_date,
+            action,
+            order_type)
+
     def __str__(self):
         return '%f,%f,%f,%f,%f,%s,%s,%s,%s,%s' % (
             self.tstamp,
@@ -23,4 +48,3 @@ class Transaction:
             str(self.operation),
             str(self.status),
             str(self.portfolio))
-    

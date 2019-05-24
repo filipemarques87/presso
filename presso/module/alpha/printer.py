@@ -8,5 +8,13 @@ class PrinterAlpha(AbstractAlphaTA):
         pass
 
     async def _computeSignal(self):
-        print(self._df['sma20'])
-        return (random.random() - 0.5) * 2
+        smadf = self._df['sma20']
+        closedf = self._df['close']
+
+        signal = 0
+        if smadf[-2] < closedf[-2] and smadf[-1] > closedf[-1]:
+            signal = 1
+        elif smadf[-2] > closedf[-2] and smadf[-1] < closedf[-1]:
+            signal = -1
+
+        return signal

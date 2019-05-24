@@ -1,21 +1,29 @@
 from presso.core.abstract.portfolio import AbstractPortfolio
 from presso.core.util.constants import OPERATION, TICKER
+from presso.core.util import LOG
 
 
 class SimplePortfolio(AbstractPortfolio):
     def _init(self):
-        self._positions[TICKER.USD] = 100000
-        self._positions[TICKER.BTC] = 0
+        pass
 
     def onPrinterSignal(self, transaction):
-        if transaction.signal > 0 and self._positions[TICKER.USD] > 0:
-            transaction.buy = TICKER.BTC
-            transaction.sell = TICKER.USD
-            transaction.total = self._positions[TICKER.USD] * 0.5
-            transaction.operation = OPERATION.MARKET
-        elif transaction.signal < 0 and self._positions[TICKER.BTC] > 0:
-            transaction.buy = TICKER.USD
-            transaction.sell = TICKER.BTC
-            transaction.total = self._positions[TICKER.BTC] * 0.5
-            transaction.operation = OPERATION.MARKET
+        if not self._can_trade():
+            LOG.info("cannot trade - trade flag is set to zero")
+            return
+
+        if transaction.signal > 0 and self._get_position(self._quote) > 0:
+            transaction.buy = self._base
+            transaction.sell = self._quote
+            transaction.total = self._get_position(self._quote)
+            transaction.operation = OPERATION.BUY_MARKET
+        elif transaction.signal < 0 and self._get_position(self._base)> 0:
+            transaction.buy = self._quote
+            transaction.sell = self._base
+            transaction.total = self._get_position(self._base)
+            transaction.operation = OPERATION.SELL_MARKET
+        else:
+            # nothing todo
+            return
+
         self._execute(self._connectors['kline_history'], transaction)

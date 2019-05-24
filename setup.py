@@ -20,3 +20,11 @@ setup(
                       'numpy',
                       'toml']
 )
+'''
+# run first to add the module folder to python path library
+export PYTHONPATH=$PYTHONPATH:/home/filipe/projects/presso
+
+# to add ta-lib
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+'''
+

@@ -21,6 +21,12 @@ db = 0
 base = "BTC"
 quote = "USDT"
 
+[[reports]]
+    name = "csv_report"
+    module = "presso.module.report.csv_report.CSVReport"
+    [reports.config]
+        path = "report.txt"
+
 #[[dataevents]]
 #    name = "bitfinex_kline"
 #    module = "presso.module.dataevent.bitfinex_kline.BitfinexKlineDataEvent"
