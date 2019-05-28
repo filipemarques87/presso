@@ -28,6 +28,8 @@ class AbstractConnector(ABC):
         elif transaction.operation == OPERATION.CANCEL_ALL_ORDERS:
             transaction = self._cancel_all_orders(transaction)
 
+        return transaction
+
     @abstractmethod
     def _buy_limit(self, transaction):
         raise NotImplementedError

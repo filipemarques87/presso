@@ -15,6 +15,7 @@ class Transaction:
         self.operation = None
         self.status = None
         self.portfolio = None
+        self.etype = None
 
     # TODO - improve the readable format
     def get_readable_format(self):
@@ -37,7 +38,7 @@ class Transaction:
             order_type)
 
     def __str__(self):
-        return '%f,%f,%f,%f,%f,%s,%s,%s,%s,%s' % (
+        return '%f,%f,%f,%f,%f,%s,%s,%s,%s,%s,%s' % (
             self.tstamp,
             self.signal,
             self.amount,
@@ -47,4 +48,5 @@ class Transaction:
             str(self.sell),
             str(self.operation),
             str(self.status),
-            str(self.portfolio))
+            str(self.portfolio),
+            str(self.etype))

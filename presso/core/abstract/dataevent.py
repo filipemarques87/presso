@@ -30,6 +30,7 @@ class AbstractDataEvent(ABC):
         self._saveHistory(evt)
         transaction = Transaction()
         transaction.tstamp = evt.datetime
+        transaction.etype = evt.type
         tasks = [alpha.onData(transaction, evt) for alpha in self._alphas]
         return asyncio.gather(*tasks)
 
