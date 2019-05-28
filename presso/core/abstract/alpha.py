@@ -22,7 +22,7 @@ class AbstractAlpha(ABC):
         if evt.type not in self._evts:
             return
 
-        if bool(REDIS_DB.get("qb:cantrade")):
+        if not bool(REDIS_DB.get("qb:cantrade")):
             LOG.info("Not allowed to trade")
             return
             
