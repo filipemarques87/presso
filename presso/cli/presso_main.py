@@ -67,12 +67,12 @@ def run(args):
         module = locate(alpha['module'])(
             alpha['name'],
             portfolio,
-            dataevents[alpha['main_dataevent']],
-            {name: dataevents[name] for name in alpha['dataevents']},
             [EVENT_TYPE[e] for e in alpha['events']],
             alpha['config']
         )
-        dataevents[alpha['main_dataevent']].addAlpha(module)
+        # Add every alpha to dataevent - the filter is done on dataevent abstract level
+        for datevt in dataevents:
+            dataevents[datevt].addAlpha(module)
 
     # Start portfolio
     loop = asyncio.get_event_loop()

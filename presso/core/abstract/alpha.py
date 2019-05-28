@@ -4,10 +4,8 @@ from abc import ABC, abstractmethod
 from presso.core.util import LOG, REDIS_DB
 
 class AbstractAlpha(ABC):
-    def __init__(self, name, portfolio, main_dataevent, dataevents, evts, config):
+    def __init__(self, name, portfolio, evts, config):
         self.name = name
-        self._main_dataevent = main_dataevent
-        self._dataevents = dataevents
         self._evts = evts
         self._config = config
         # Check if portfolio has handler function
@@ -19,17 +17,18 @@ class AbstractAlpha(ABC):
         self._init()
 
     async def onData(self, transaction, evt):
-        if evt.type not in self._evts:
+        if evt.type not in self._evts or not self._evts:
             return
 
         if not bool(REDIS_DB.get("qb:cantrade")):
             LOG.info("Not allowed to trade")
             return
             
-        signal = await self._calcSignal(evt.data)
+        signal = await self._calcSignal(evt.data, evt.type)
         if signal > 1 or signal < -1:
             raise ValueError('Signal value should between +/-1')
         transaction.signal = signal
+        transaction.etype = evt.type
         self._callback(transaction)
 
     @abstractmethod
@@ -37,5 +36,5 @@ class AbstractAlpha(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def _calcSignal(self, data):
+    async def _calcSignal(self, data, type):
         raise NotImplementedError

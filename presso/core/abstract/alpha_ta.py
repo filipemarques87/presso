@@ -11,8 +11,8 @@ OHLC_HEADER = ['date', 'open', 'high', 'low', 'close', 'volume']
 
 
 class AbstractAlphaTA(AbstractAlpha):
-    def __init__(self, name, portfolio, main_dataevent, dataevents, evts, config):
-        super().__init__(name, portfolio, main_dataevent, dataevents, evts, config)
+    def __init__(self, name, portfolio, evts, config):
+        super().__init__(name, portfolio, evts, config)
 
         self.__n = self._config['n']
         self._df = dict((k, np.full(self.__n, np.nan, dtype=float)) for k in OHLC_HEADER)
@@ -22,15 +22,15 @@ class AbstractAlphaTA(AbstractAlpha):
     def _init(self):
         pass
 
-    async def _calcSignal(self, data):
+    async def _calcSignal(self, data, type):
         for k in OHLC_HEADER:
             self._df[k] = self.__shift5(self._df[k], -1)
             self._df[k][-1] = data[k]
         
         for ind in self.__indicators:
             self._df[ind] = self.__indicators[ind].compute(self._df)
-
-        return await self._computeSignal()
+        print("cenas")
+        return await self._computeSignal(type)
 
     # https://stackoverflow.com/questions/30399534/shift-elements-in-a-numpy-array
     def __shift5(self, arr, num, fill_value=np.nan):
@@ -46,7 +46,7 @@ class AbstractAlphaTA(AbstractAlpha):
         return result
 
     @abstractmethod
-    async def _computeSignal(self):
+    async def _computeSignal(self, type):
         raise NotImplementedError
 
     def __get_indicator(self, ind):
