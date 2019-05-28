@@ -91,12 +91,11 @@ quote = "USDT"
                 n = 20
 
 
-[[connectors]]
-    name = "kline_history"
-    module = "presso.module.connector.kline_history.KlineHistoryConnector"
-    # Connector may use data from DataEvents to calculate price
-    dataevents = ["sql_kline",]
-    [connectors.config]
+[connector]
+name = "kline_history"
+module = "presso.module.connector.kline_history.KlineHistoryConnector"
+# Connector may use data from DataEvents to calculate price
+[connector.config]
 
 
 [[statistics]]

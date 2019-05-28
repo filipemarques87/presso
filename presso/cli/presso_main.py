@@ -42,13 +42,9 @@ def run(args):
         )
 
     # Load connectors
-    connectors = {}
-    for connector in manifest['connectors']:
-        module = locate(connector['module'])(
-            {name: dataevents[name] for name in connector['dataevents']},
-            connector['config']
-        )
-        connectors[connector['name']] = module
+    conn = manifest['connector']
+    module = locate(conn['module'])(conn['name'], conn['config'])
+    connector = module
 
     # Load statistics
     statistics = {}
@@ -64,7 +60,7 @@ def run(args):
 
     # Load portfolio
     portfolio = locate(manifest['module'])(
-        connectors, reports, statistics, manifest['config'])
+        connector, reports, statistics, manifest['config'])
 
     # Load alphas
     for alpha in manifest['alphas']:

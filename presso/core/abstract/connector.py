@@ -6,8 +6,8 @@ from presso.core.util import LOG
 
 
 class AbstractConnector(ABC):
-    def __init__(self, dataevents, config):
-        self._dataevents = dataevents
+    def __init__(self, name, config):
+        self._name = name
         self._config = config
         self._init()
 

@@ -7,8 +7,8 @@ from presso.core.util import LOG, REDIS_DB
 
 
 class AbstractPortfolio(ABC):
-    def __init__(self, connectors, reports, statistics, config):
-        self._connectors = connectors
+    def __init__(self, connector, reports, statistics, config):
+        self._connector = connector
         self._reports = reports
         self._statistics = statistics
         self._config = config
