@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 
 
+from presso.core.util import LOG, REDIS_DB
+
 class AbstractAlpha(ABC):
     def __init__(self, name, portfolio, main_dataevent, dataevents, evts, config):
         self.name = name
@@ -18,6 +20,10 @@ class AbstractAlpha(ABC):
 
     async def onData(self, transaction, evt):
         if evt.type not in self._evts:
+            return
+
+        if bool(REDIS_DB.get("qb:cantrade")):
+            LOG.info("Not allowed to trade")
             return
             
         signal = await self._calcSignal(evt.data)
