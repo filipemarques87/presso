@@ -7,7 +7,7 @@ class PrinterAlpha(AbstractAlphaTA):
     def _init(self):
         pass
 
-    async def _computeSignal(self):
+    async def _computeSignal(self, type):
         smadf = self._df['sma20']
         closedf = self._df['close']
 

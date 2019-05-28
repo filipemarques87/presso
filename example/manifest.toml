@@ -90,6 +90,28 @@ quote = "USDT"
             [alphas.config.indicators.config]
                 n = 20
 
+[[alphas]]
+    name = "CheckOrder"
+    module = "presso.module.alpha.check_order.CheckOrderAlpha"
+    # Alpha is triggered by its main DataEvent
+    main_dataevent = "sql_kline"
+    # Alpha also can access other DataEvents
+    dataevents = []
+    # The events that triggers this strategy
+    events = ["CHECK_ORDERS", ]
+    [alphas.config]
+
+[[alphas]]
+    name = "Ticker"
+    module = "presso.module.alpha.ticker.TickerAlpha"
+    # Alpha is triggered by its main DataEvent
+    main_dataevent = "sql_kline"
+    # Alpha also can access other DataEvents
+    dataevents = []
+    # The events that triggers this strategy
+    events = ["TICK", ]
+    [alphas.config]
+
 
 [connector]
 name = "kline_history"
