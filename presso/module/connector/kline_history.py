@@ -7,11 +7,10 @@ from presso.core.util import LOG
 
 class KlineHistoryConnector(AbstractConnector):
     def _init(self):
-        _, self._dataevent = self._dataevents.popitem()
         self._commission = 0.9975
 
     def __getPrice(self):
-        return self._dataevent.getHistory(1)[0][-1]
+        pass
 
     #async def execute(self, transaction):
     #    #if transaction.operation == OPERATION.MARKET:

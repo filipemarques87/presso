@@ -7,6 +7,12 @@ class SimplePortfolio(AbstractPortfolio):
     def _init(self):
         pass
 
+    def onTickerSignal(self, transaction):
+        LOG.info("Tick event")
+
+    def onCheckOrderSignal(self, transaction):
+        LOG.info("Check Order event")
+
     def onPrinterSignal(self, transaction):
         if not self._can_trade():
             LOG.info("cannot trade - trade flag is set to zero")
@@ -26,4 +32,4 @@ class SimplePortfolio(AbstractPortfolio):
             # nothing todo
             return
 
-        self._execute(self._connectors['kline_history'], transaction)
+        self._execute(self._connector, transaction)

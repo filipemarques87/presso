@@ -9,4 +9,6 @@ class CSVReport(AbstractReport):
         pass
 
     def _generate_report(self, msg):
-        print(msg)
+        pass
+        #print(msg)
+        

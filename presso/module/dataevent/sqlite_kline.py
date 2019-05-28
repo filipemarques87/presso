@@ -1,8 +1,9 @@
 import numpy
 import sqlite3
+import time
 
 from presso.core.abstract.dataevent import AbstractDataEvent
-from presso.core.event import CandleStickEvent, TickEvent
+from presso.core.event import CheckOrderEvent, CandleStickEvent, TickEvent
 
 
 class SQLiteKlineDataEvent(AbstractDataEvent):
@@ -15,25 +16,32 @@ class SQLiteKlineDataEvent(AbstractDataEvent):
         self.__cursor.execute(self.__query)
 
     async def _iter(self):
+        check_order = False
         while True:
-            data = self.__cursor.fetchone()
-            if data is None:
-                break
-        
+            time.sleep(0.05)
             bar = None
-            tstamp = data[0]/1000
-            if data[2] == '1':
-                bar = TickEvent(tstamp)
-                bar.price = data[6]
+            if check_order:
+                check_order = False
+                bar = CheckOrderEvent(0)
             else:
-                bar = CandleStickEvent(tstamp)
-                bar.data = {'date': tstamp,
-                            'open': data[3],
-                            'high': data[4],
-                            'low': data[5],
-                            'close': data[6],
-                            'volume': data[7],
-                            }
+                check_order = True
+                data = self.__cursor.fetchone()
+                if data is None:
+                    break
+            
+                tstamp = data[0]/1000
+                if data[2] == 1:
+                    bar = TickEvent(tstamp)
+                    bar.data = data[6]
+                else:
+                    bar = CandleStickEvent(tstamp)
+                    bar.data = {'date': tstamp,
+                                'open': data[3],
+                                'high': data[4],
+                                'low': data[5],
+                                'close': data[6],
+                                'volume': data[7],
+                                }
 
             yield bar
 
