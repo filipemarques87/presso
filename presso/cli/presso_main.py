@@ -3,9 +3,9 @@ import asyncio
 import logging
 import redis
 import sys
-
+import signal
+import sys
 from pydoc import locate
-
 import toml
 
 from presso.core import util
@@ -94,6 +94,13 @@ def run(args):
         asyncio.wait(asyncio.sleep(1))
         loop.stop()
     loop.add_reader(sys.stdin, stop)
+
+    # for CTRL+C
+    def signal_handler(sig, frame):
+            stop()
+            sys.exit(0)
+    signal.signal(signal.SIGINT, signal_handler)
+
     try:
         loop.run_until_complete(main())
     except RuntimeError as error:
