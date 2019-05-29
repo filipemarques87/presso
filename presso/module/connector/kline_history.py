@@ -6,6 +6,10 @@ from presso.core.util import LOG
 
 
 class KlineHistoryConnector(AbstractConnector):
+    def __init__(self, name, config):
+        super().__init__(name, config)
+        self.__id_gen = 0
+
     def _init(self):
         self._commission = 0.9975
 
@@ -36,11 +40,15 @@ class KlineHistoryConnector(AbstractConnector):
         return transaction
 
     def _buy_market(self, transaction):
-        LOG.info("buy market")
+        transaction.status = STATUS.PENDING
+        transaction.id = self.__id_gen
+        self.__id_gen = self.__id_gen + 1
         return transaction
 
     def _sell_market(self, transaction):
-        print("sell maarket")
+        transaction.status = STATUS.PENDING
+        transaction.id = self.__id_gen
+        self.__id_gen = self.__id_gen + 1
         return transaction
 
     def _cancel_order(self, transaction):
@@ -49,4 +57,8 @@ class KlineHistoryConnector(AbstractConnector):
 
     def _cancel_all_orders(self, transaction):
         print("cancel all orders")
+        return transaction
+
+    def _get_order_status(self, transaction):
+        transaction.status = STATUS.SUCCESS
         return transaction

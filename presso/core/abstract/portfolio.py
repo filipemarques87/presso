@@ -13,6 +13,7 @@ class AbstractPortfolio(ABC):
         self._statistics = statistics
         self._config = config
         self._transactions = []
+        self._pending_transactions = []
         self._base = config["base"]
         self._quote = config["quote"]
         self._init()
@@ -22,7 +23,6 @@ class AbstractPortfolio(ABC):
         for rpt in self._reports.values():
             rpt.report(transaction)
         
-        self._transactions.append(transaction)
         task = asyncio.ensure_future(connector.execute(transaction))
         def __callback(fn):
             if fn.cancelled():
@@ -33,6 +33,12 @@ class AbstractPortfolio(ABC):
                     LOG.critical("Error on connector call: args:{}, result:{}".format(fn.arg, error))
                 else:
                     tr = fn.result()
+                    if tr.status == STATUS.PENDING:
+                        self._pending_transactions.append(tr)
+                    elif tr.status == STATUS.SUCCESS:
+                        self._transactions.append(tr)
+                    
+                    self._transactions.append(tr)
                     print("****")
                     print(str(tr))
 

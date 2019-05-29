@@ -27,6 +27,8 @@ class AbstractConnector(ABC):
             transaction = self._buy_market(transaction)
         elif transaction.operation == OPERATION.CANCEL_ALL_ORDERS:
             transaction = self._cancel_all_orders(transaction)
+        elif transaction.operation == OPERATION.CHECK_ORDERS:
+            transaction = self._get_order_status(transaction)
 
         return transaction
 
@@ -54,6 +56,10 @@ class AbstractConnector(ABC):
     def _cancel_all_orders(self, transaction):
         raise NotImplementedError
 
+    
+
     #def get_order_book(symbol):
     #def get_order(symbol, orderId):
-    #def get_order_status(symbol, orderId):
+    @abstractmethod
+    def _get_order_status(self, transaction):
+        raise NotImplementedError

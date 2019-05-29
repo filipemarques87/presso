@@ -6,6 +6,7 @@ from presso.core.util.constants import OPERATION
 class Transaction:
     def __init__(self):
         self.tstamp = 0
+        self.id = None
         self.signal = 0
         self.amount = 0
         self.total = 0
@@ -38,8 +39,9 @@ class Transaction:
             order_type)
 
     def __str__(self):
-        return '%f,%f,%f,%f,%f,%s,%s,%s,%s,%s,%s' % (
+        return '%f,%s,%f,%f,%f,%f,%s,%s,%s,%s,%s,%s' % (
             self.tstamp,
+            self.id,
             self.signal,
             self.amount,
             self.total,

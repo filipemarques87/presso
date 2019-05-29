@@ -12,8 +12,8 @@ class SimplePortfolio(AbstractPortfolio):
         pass
 
     def onCheckOrderSignal(self, transaction):
-        #LOG.info("Check Order event")
-        pass
+        transaction.operation = OPERATION.CHECK_ORDERS
+        self._execute(self._connector, transaction)
 
     def onPrinterSignal(self, transaction):
         if not self._can_trade():
