@@ -10,7 +10,7 @@ import toml
 
 from presso.core import util
 from presso.core.eventqueue import EventQueue
-from presso.core.util.constants import EVENT_TYPE
+from presso.core.util.constants import EVENT
 
 
 def run(args):
@@ -67,7 +67,7 @@ def run(args):
         module = locate(alpha['module'])(
             alpha['name'],
             portfolio,
-            [EVENT_TYPE[e] for e in alpha['events']],
+            [EVENT[e] for e in alpha['events']],
             alpha['config']
         )
         # Add every alpha to dataevent - the filter is done on dataevent abstract level

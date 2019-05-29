@@ -1,23 +1,9 @@
-from presso.core.util.constants import EVENT_TYPE
+import math
+import time
 
 
 class Event:
-    def __init__(self, date, etype):
-        self.datetime = date
-        self.type = etype
-        self.data = None
-
-
-class CheckOrderEvent(Event):
-    def __init__(self, date):
-        super().__init__(date, EVENT_TYPE.CHECK_ORDERS)
-
-
-class TickEvent(Event):
-    def __init__(self, date):
-        super().__init__(date, EVENT_TYPE.TICK)
-
-
-class CandleStickEvent(Event):
-    def __init__(self, date):
-        super().__init__(date, EVENT_TYPE.CANDLE_STICK)
+    def __init__(self, type, date=None, data=None):
+        self.type = type
+        self.date = not date if date else math.ceil(time.time())
+        self.data = data

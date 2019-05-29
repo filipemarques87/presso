@@ -33,7 +33,7 @@ class EventQueue:
         if caller not in self.__locker:
             self.__locker[caller] = Lock()
         await self.__locker[caller]
-        self.__queue.put_nowait((evt.datetime, caller, evt))
+        self.__queue.put_nowait((evt.date, caller, evt))
 
     def remove(self, caller):
         self.__locker.pop(caller)

@@ -3,7 +3,8 @@ import sqlite3
 import time
 
 from presso.core.abstract.dataevent import AbstractDataEvent
-from presso.core.event import CheckOrderEvent, CandleStickEvent, TickEvent
+from presso.core.event import Event
+from presso.core.util.constants import EVENT
 
 
 class SQLiteKlineDataEvent(AbstractDataEvent):
@@ -19,31 +20,30 @@ class SQLiteKlineDataEvent(AbstractDataEvent):
         check_order = False
         while True:
             time.sleep(0.05)
-            bar = None
+
+            etype = None
+            tstamp = None
+            edata = None
             if check_order:
                 check_order = False
-                bar = CheckOrderEvent(0)
+                etype = EVENT.CHECK_ORDERS
             else:
                 check_order = True
                 data = self.__cursor.fetchone()
                 if data is None:
                     break
-            
-                tstamp = data[0]/1000
-                if data[2] == 1:
-                    bar = TickEvent(tstamp)
-                    bar.data = data[6]
-                else:
-                    bar = CandleStickEvent(tstamp)
-                    bar.data = {'date': tstamp,
-                                'open': data[3],
-                                'high': data[4],
-                                'low': data[5],
-                                'close': data[6],
-                                'volume': data[7],
-                                }
 
-            yield bar
+                tstamp = data[0]/1000
+                etype = EVENT.TICK if data[2] == 1 else EVENT.CANDLE_STICK
+                edata = {'date': tstamp,
+                         'open': data[3],
+                         'high': data[4],
+                         'low': data[5],
+                         'close': data[6],
+                         'volume': data[7]
+                         }
+
+            yield Event(etype, tstamp, edata)
 
     def shutdown(self):
         super().shutdown()
