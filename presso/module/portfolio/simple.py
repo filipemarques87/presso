@@ -8,10 +8,12 @@ class SimplePortfolio(AbstractPortfolio):
         pass
 
     def onTickerSignal(self, transaction):
-        LOG.info("Tick event")
+        #LOG.info("Tick event")
+        pass
 
     def onCheckOrderSignal(self, transaction):
-        LOG.info("Check Order event")
+        #LOG.info("Check Order event")
+        pass
 
     def onPrinterSignal(self, transaction):
         if not self._can_trade():

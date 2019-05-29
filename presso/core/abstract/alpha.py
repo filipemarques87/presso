@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 
 from presso.core.util import LOG, REDIS_DB
+from presso.core.util import LOG
 
 class AbstractAlpha(ABC):
     def __init__(self, name, portfolio, evts, config):
@@ -26,7 +27,8 @@ class AbstractAlpha(ABC):
             
         signal = await self._calcSignal(evt.data, evt.type)
         if signal > 1 or signal < -1:
-            raise ValueError('Signal value should between +/-1')
+            LOG.warn('Signal value should between +/-1')
+            return
         transaction.signal = signal
         transaction.etype = evt.type
         self._callback(transaction)

@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 
 from presso.core.abstract.alpha import AbstractAlpha
 from presso.core.indicators import INDICATORS
+from presso.core.util.constants import EVENT
 
 OHLC_HEADER = ['date', 'open', 'high', 'low', 'close', 'volume']
 
@@ -23,13 +24,19 @@ class AbstractAlphaTA(AbstractAlpha):
         pass
 
     async def _calcSignal(self, data, type):
+        if type == EVENT.HISTO_DATA:
+            for candle in data:
+                for k in OHLC_HEADER:
+                    self._df[k] = self.__shift5(self._df[k], -1)
+                    self._df[k][-1] = candle[k]
+            return -10
+
         for k in OHLC_HEADER:
             self._df[k] = self.__shift5(self._df[k], -1)
             self._df[k][-1] = data[k]
         
         for ind in self.__indicators:
             self._df[ind] = self.__indicators[ind].compute(self._df)
-        print("cenas")
         return await self._computeSignal(type)
 
     # https://stackoverflow.com/questions/30399534/shift-elements-in-a-numpy-array

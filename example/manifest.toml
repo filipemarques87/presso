@@ -52,6 +52,7 @@ quote = "USDT"
     data_path = "data/sql/crypto.db"
     history_file = ""
     [dataevents.config]
+        init_n = 100
         query = """
             SELECT
                 date, symbol, granularity, open, high, low, close, volume
@@ -80,7 +81,7 @@ quote = "USDT"
     # Alpha also can access other DataEvents
     dataevents = []
     # The events that triggers this strategy
-    events = ["CANDLE_STICK", ]
+    events = ["CANDLE_STICK", "HISTO_DATA"]
     [alphas.config]
         # number of data size stored (ohlc + indicators)
         n = 100
@@ -88,7 +89,7 @@ quote = "USDT"
             type = "sma"
             name = "sma20"
             [alphas.config.indicators.config]
-                n = 20
+                n = 10
 
 [[alphas]]
     name = "CheckOrder"

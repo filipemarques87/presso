@@ -16,13 +16,30 @@ class SQLiteKlineDataEvent(AbstractDataEvent):
         # execute the query
         self.__cursor.execute(self.__query)
 
+    def _init_histo_data(self, n):
+        edata = []
+        count = 0
+        while count < n:
+            data = self.__cursor.fetchone()
+            if data[2] == 1:
+                continue
+            edata.append({'date': data[0]/1000,
+                          'open': data[3],
+                          'high': data[4],
+                          'low': data[5],
+                          'close': data[6],
+                          'volume': data[7]
+                          })
+            count = count+1
+        return Event(EVENT.HISTO_DATA, data=edata) 
+
     async def _iter(self):
         check_order = False
         while True:
-            time.sleep(0.05)
+            #time.sleep(0.05)
 
             etype = None
-            tstamp = None
+            tstamp = -1
             edata = None
             if check_order:
                 check_order = False
@@ -43,7 +60,7 @@ class SQLiteKlineDataEvent(AbstractDataEvent):
                          'volume': data[7]
                          }
 
-            yield Event(etype, tstamp, edata)
+            yield Event(etype, date=tstamp, data=edata)
 
     def shutdown(self):
         super().shutdown()

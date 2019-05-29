@@ -13,8 +13,8 @@ class PrinterAlpha(AbstractAlphaTA):
 
         signal = 0
         if smadf[-2] < closedf[-2] and smadf[-1] > closedf[-1]:
-            signal = 1
-        elif smadf[-2] > closedf[-2] and smadf[-1] < closedf[-1]:
             signal = -1
+        elif smadf[-2] > closedf[-2] and smadf[-1] < closedf[-1]:
+            signal = 1
 
         return signal

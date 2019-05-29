@@ -14,7 +14,6 @@ class AbstractDataEvent(ABC):
         self._datapath = datapath
         self._historyfile = historyfile
         self._config = config
-        self._pair = config["base"]+config["quote"]
         self._alphas = set()
         self._history = None
         self._task = asyncio.ensure_future(self._start())
@@ -50,6 +49,11 @@ class AbstractDataEvent(ABC):
 
     async def _start(self):
         event_queue = EventQueue.getInstance()
+        # get historic data for initialization
+        evt = self._init_histo_data(self._config["init_n"])
+        await event_queue.put(self, evt)
+
+        # start with realtime
         async for evt in self._iter():
             # Wait for previous event to be consumed
             await event_queue.put(self, evt)
@@ -61,4 +65,8 @@ class AbstractDataEvent(ABC):
 
     @abstractmethod
     async def _iter(self):
+        raise NotImplementedError
+    
+    @abstractmethod
+    def _init_histo_data(self, n):
         raise NotImplementedError
