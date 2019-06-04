@@ -60,7 +60,7 @@ class SQLiteKlineDataEvent(AbstractDataEvent):
                          'volume': data[7]
                          }
 
-            yield Event(etype, date=tstamp, data=edata)
+            yield Event(etype, date=tstamp, price=data[6], data=edata)
 
     def shutdown(self):
         super().shutdown()

@@ -9,6 +9,7 @@ class KlineHistoryConnector(AbstractConnector):
     def __init__(self, name, config):
         super().__init__(name, config)
         self.__id_gen = 0
+        self.__prev_tr = None
 
     def _init(self):
         self._commission = 0.9975
@@ -32,23 +33,23 @@ class KlineHistoryConnector(AbstractConnector):
     #    print(transaction)
 
     def _buy_limit(self, transaction):
-        print("buy limit")
         return transaction
 
     def _sell_limit(self, transaction):
-        print("sell limit")
         return transaction
 
     def _buy_market(self, transaction):
         transaction.status = STATUS.PENDING
         transaction.id = self.__id_gen
         self.__id_gen = self.__id_gen + 1
+        self.__prev_tr = transaction
         return transaction
 
     def _sell_market(self, transaction):
         transaction.status = STATUS.PENDING
         transaction.id = self.__id_gen
         self.__id_gen = self.__id_gen + 1
+        self.__prev_tr = transaction
         return transaction
 
     def _cancel_order(self, transaction):
@@ -60,5 +61,9 @@ class KlineHistoryConnector(AbstractConnector):
         return transaction
 
     def _get_order_status(self, transaction):
-        transaction.status = STATUS.SUCCESS
-        return transaction
+        if self.__prev_tr is None:
+            return None
+        completed_tr = self.__prev_tr
+        completed_tr.status = STATUS.SUCCESS
+        self.__prev_tr = None
+        return completed_tr

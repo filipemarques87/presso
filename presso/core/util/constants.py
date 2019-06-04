@@ -3,7 +3,9 @@ from enum import Enum
 
 MAX_TIMEOUT = 1
 
-STATUS = Enum('STATUS', ('SUCCESS', 'FAIL', 'PENDING'))
+SIDE = Enum("SIDE", ("SELL", "BUY"))
+
+STATUS = Enum('STATUS', ('SUCCESS', 'FAIL', 'PENDING','CANCELED'))
 
 TICKER = Enum('TICKER', ('USD', 'USDT', 'BTC',
                          'LTC', 'BCH', 'ETH', 'ADA', 'XEM'))

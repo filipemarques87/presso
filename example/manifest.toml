@@ -61,6 +61,7 @@ quote = "USDT"
             WHERE 1=1
                 and symbol = 'BTCUSDT'
                 and date between strftime('%s','2017-08-20 00:00:00')*1000 and strftime('%s','2017-09-01 00:00:00')*1000
+                and granularity=15
             ORDER BY
                 date asc
             """

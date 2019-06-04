@@ -16,7 +16,7 @@ class AbstractConnector(ABC):
         raise NotImplementedError
 
     async def execute(self, transaction):
-        LOG.info("[TR] %s" % str(transaction))
+        #LOG.info("[TR] %s" % str(transaction))
         if transaction.operation == OPERATION.SELL_LIMIT:
             transaction = self._sell_limit(transaction)
         elif transaction.operation == OPERATION.BUY_LIMIT:
