@@ -30,6 +30,7 @@ class AbstractAlpha(ABC):
             LOG.warn('Signal value should between +/-1')
             return
         transaction.signal = signal
+        transaction.price = evt.price
         transaction.etype = evt.type
         self._callback(transaction)
 
