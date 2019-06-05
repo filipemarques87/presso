@@ -1,7 +1,7 @@
 import numpy
 
 from presso.core.abstract.connector import AbstractConnector
-from presso.core.util.constants import OPERATION, STATUS, TICKER
+from presso.core.util.constants import OPERATION, STATUS
 from presso.core.util import LOG
 
 

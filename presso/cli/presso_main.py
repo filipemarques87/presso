@@ -7,10 +7,12 @@ import signal
 import sys
 from pydoc import locate
 import toml
+from enum import Enum
 
 from presso.core import util
 from presso.core.eventqueue import EventQueue
-from presso.core.util.constants import EVENT
+#from presso.core.util.constants import EVENT
+import presso.core.util.constants as const
 
 
 def run(args):
@@ -26,6 +28,9 @@ def run(args):
     util.REDIS_DB = redis.StrictRedis(
         host=manifest["redis"]["url"], port=manifest["redis"]["port"],
         db=manifest["redis"]["db"], decode_responses=True)
+    # Load events
+    events = [e.name for e in const.EVENT] + manifest['events']
+    const.EVENT = Enum('EVENT', events)
 
     base = manifest["config"]["base"]
     quote = manifest["config"]["quote"]
@@ -67,7 +72,7 @@ def run(args):
         module = locate(alpha['module'])(
             alpha['name'],
             portfolio,
-            [EVENT[e] for e in alpha['events']],
+            [const.EVENT[e] for e in alpha['events']],
             alpha['config']
         )
         # Add all alpha's to the dataevent - the filter is done on dataevent abstract level

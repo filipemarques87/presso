@@ -5,6 +5,7 @@ module = "presso.module.portfolio.simple.SimplePortfolio"
 # Realtime is true means all DataEvents are generated at the same time
 # false means they will be ordered by timestamp
 realtime = false
+events = ["TICK", "CANDLE_STICK", "CHECK_ORDERS"]
 [log]
 # Default log level
 level = "info"
