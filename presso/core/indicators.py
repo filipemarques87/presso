@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import numpy as np
 from talib.abstract import *
 
 INDICATORS = {
@@ -8,6 +7,12 @@ INDICATORS = {
 
 
 class Indicator(ABC):
+    """
+    The Indicator class is a wrapper class to use the indicators from ta-lib.
+    Those indicators must be defined in config file and they are available in all alpha's
+    classes that extends from AbstractAlphaTA class.
+    """
+
     def __init__(self, name, config):
         self._name = name
         self._config = config

@@ -70,7 +70,7 @@ def run(args):
             [EVENT[e] for e in alpha['events']],
             alpha['config']
         )
-        # Add every alpha to dataevent - the filter is done on dataevent abstract level
+        # Add all alpha's to the dataevent - the filter is done on dataevent abstract level
         for datevt in dataevents:
             dataevents[datevt].addAlpha(module)
 
@@ -82,19 +82,19 @@ def run(args):
         # Let DataEvents to run first
         await asyncio.sleep(2)
         await event_queue.consume()
-    # Press ENTER to stop eventloop and run statistics
 
     def stop():
         for dataevent in dataevents.values():
             dataevent.shutdown()
         asyncio.wait(asyncio.sleep(1))
         loop.stop()
+    # Press ENTER to stop eventloop and run statistics
     loop.add_reader(sys.stdin, stop)
 
-    # for CTRL+C
     def signal_handler(sig, frame):
             stop()
             sys.exit(0)
+    # Or press CTRL+C to stop eventloop and run statistics
     signal.signal(signal.SIGINT, signal_handler)
 
     try:

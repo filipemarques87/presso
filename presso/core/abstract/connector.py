@@ -16,6 +16,13 @@ class AbstractConnector(ABC):
         raise NotImplementedError
 
     async def execute(self, transaction):
+        # cancel first pending trades
+        cancel_trans = []
+        if transaction.to_cancel:
+            cancel_trans = self._cancel_all_orders(transaction)
+            if not isinstance(cancel_trans, list):
+                cancel_trans = [cancel_trans]
+
         #LOG.info("[TR] %s" % str(transaction))
         if transaction.operation == OPERATION.SELL_LIMIT:
             transaction = self._sell_limit(transaction)
@@ -25,12 +32,13 @@ class AbstractConnector(ABC):
             transaction = self._sell_market(transaction)
         elif transaction.operation == OPERATION.BUY_MARKET:
             transaction = self._buy_market(transaction)
-        elif transaction.operation == OPERATION.CANCEL_ALL_ORDERS:
-            transaction = self._cancel_all_orders(transaction)
         elif transaction.operation == OPERATION.CHECK_ORDERS:
             transaction = self._get_order_status(transaction)
 
-        return transaction
+        if not isinstance(transaction, list):
+            transaction = [transaction]
+
+        return cancel_trans + transaction
 
     @abstractmethod
     def _buy_limit(self, transaction):

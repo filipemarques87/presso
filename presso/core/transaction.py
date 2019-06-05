@@ -5,40 +5,22 @@ from presso.core.util.constants import OPERATION
 
 class Transaction:
     def __init__(self):
-        self.tstamp = 0
-        self.id = None
-        self.signal = 0
-        self.side = None
-        self.price = 0
-        self.amount = 0
-        self.total = 0
-        self.operation = None
+        self.tstamp = 0  # time stamp of the transaction
+        self.id = None  # the id of transaction after place an order to the broker
+        self.signal = 0  # the strength of the action: -1 to sell and 1 to buy
+        self.side = None  # the way of the transaction: can be SELL or BUY
+        self.price = 0  # last price that is used to calculate the positions to transaction
+        self.amount = 0  # amount to buy or sell
+        self.total = 0  # total value of the transaction (price * amount)
+        self.operation = None  # operation type: buy market, buy limit, ...
+        # status of the transaction
+        # when an order is placed into the market, the status is set to PENDING
+        # and when the order is comleted, the status is set to COMPLETED
         self.status = None
-        self.portfolio = None
-        self.etype = None
-
-    # TODO - improve the readable format
-    def get_readable_format(self):
-        srt_date = datetime.fromtimestamp(
-            self.tstamp).strftime('%d/%m/%Y %H:%M:%S')
-
-        action = "Place order"
-        if self.status is not None:
-            action = "Completed order[%s]" % self.status
-
-        order_type = "BUY"
-        if self.operation == OPERATION.SELL_LIMIT or self.operation == OPERATION.SELL_MARKET:
-            order_type = "SELL"
-        elif self.operation == OPERATION.CANCEL_ALL_ORDERS:
-            order_type = "CANCEL"
-
-        return '%s - %s %s' % (
-            srt_date,
-            action,
-            order_type)
+        self.to_cancel = False # indicates if this transaction needs to cancel all trades before buy sell
 
     def __str__(self):
-        return '%f,%s,%f,%s,%f,%f,%f,%s,%s,%s,%s' % (
+        return '%f,%s,%f,%s,%f,%f,%f,%s,%s,%d' % (
             self.tstamp,
             self.id,
             self.signal,
@@ -48,5 +30,4 @@ class Transaction:
             self.total,
             str(self.operation),
             str(self.status),
-            str(self.portfolio),
-            str(self.etype))
+            self.to_cancel)

@@ -22,14 +22,10 @@ class AbstractDataEvent(ABC):
     def addAlpha(self, alpha):
         self._alphas.add(alpha)
 
-    def getHistory(self, num=0):
-        return self._history[-num:]
-
     def sendData(self, evt):
         self._saveHistory(evt)
         transaction = Transaction()
         transaction.tstamp = evt.date
-        transaction.etype = evt.type
         tasks = [alpha.onData(transaction, evt) for alpha in self._alphas]
         return asyncio.gather(*tasks)
 
@@ -69,4 +65,8 @@ class AbstractDataEvent(ABC):
     
     @abstractmethod
     def _init_histo_data(self, n):
+        """
+        This method is used to initialize the stretagies with past data (for example
+        used to initialize the arrays to compute the technical analysis indicators)
+        """
         raise NotImplementedError

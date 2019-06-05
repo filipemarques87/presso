@@ -21,17 +21,17 @@ class AbstractAlpha(ABC):
         if evt.type not in self._evts or not self._evts:
             return
 
+        # to prevent bot trade
         if not bool(REDIS_DB.get("qb:cantrade")):
             LOG.info("Not allowed to trade")
             return
             
         signal = await self._calcSignal(evt.data, evt.type)
         if signal > 1 or signal < -1:
-            LOG.warn('Signal value should between +/-1')
-            return
+            raise ValueError('Signal value should between +/-1')
+            
         transaction.signal = signal
         transaction.price = evt.price
-        transaction.etype = evt.type
         self._callback(transaction)
 
     @abstractmethod

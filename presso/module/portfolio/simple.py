@@ -1,5 +1,5 @@
 from presso.core.abstract.portfolio import AbstractPortfolio
-from presso.core.util.constants import OPERATION, TICKER, SIDE
+from presso.core.util.constants import OPERATION, SIDE
 from presso.core.util import LOG
 
 
